@@ -24,7 +24,7 @@ def read_calendar_id():
     return config['DEFAULT']['calendar_id']
 
 def get_creds():
-    store = file.Storage('token.json')
+    store = file.Storage(os.path.join(DIRNAME, 'token.json'))
     creds = store.get()
     if not creds or creds.invalid:
         flow = client.flow_from_clientsecrets(os.path.join(DIRNAME, 'credentials.json'), SCOPES)
