@@ -63,12 +63,14 @@ creds = get_creds()
 event = get_next_event(creds, calendar_id)
 
 htmlLink = event['htmlLink']
-location = event.get('location')
 summary = event['summary']
 
 print(u''.format(summary))
 call(['open', htmlLink])
 
+# Find and open location_url
+location = event.get('location')
+location_urls=[]
 if location:
     location_urls = re.findall(urlregex, location)
 
@@ -77,5 +79,16 @@ if len(location_urls) >= 1:
     print(location)
     if(len(sys.argv) == 1):
         call(['open', location])
-else:
-    print('no location url found')
+        exit(0)
+
+# Find and open video listed in conferenceData
+cd = event.get('conferenceData')
+if cd:
+    ve = [ ep for ep in cd['entryPoints'] if ep['entryPointType'] == 'video']
+    if len(ve) >=1:
+        vuri = ve[0].get('uri')
+        print(vuri)
+        call(['open', vuri])
+        exit(0)
+
+print('no location url found')
